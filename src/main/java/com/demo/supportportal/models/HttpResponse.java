@@ -1,6 +1,9 @@
 package com.demo.supportportal.models;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.http.HttpStatus;
+
+import java.util.Date;
 
 public class HttpResponse {
 
@@ -9,11 +12,23 @@ public class HttpResponse {
     private String reason;
     private String message;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "DD-MM-yyyy HH:mm:ss", timezone = "Asia/Kolkata")
+    private Date timestamp;
+
     public HttpResponse(int httpStatusCode, HttpStatus httpStatus, String reason, String message) {
+        this.timestamp = new Date();
         this.httpStatusCode = httpStatusCode;
         this.httpStatus = httpStatus;
         this.reason = reason;
         this.message = message;
+    }
+
+    public Date getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(Date timestamp) {
+        this.timestamp = timestamp;
     }
 
     public int getHttpStatusCode() {

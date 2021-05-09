@@ -2,6 +2,7 @@ package com.demo.supportportal.models;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -20,15 +21,16 @@ public class User implements Serializable {
     private String email;
     private String profileImageUrl;
     private Date lastLoginDate;
+    private Date lastLoginDateDisplay;
     private Date joinDate;
-    private List<String> roles;
-    private List<String> authorities;
+    private ArrayList<String> roles;
+    private ArrayList<String> authorities;
     private boolean isActive;
     private boolean isNotLocked;
 
     public User() {}
 
-    public User(Long id, String userId, String firstName, String lastName, String username, String password, String email, String profileImageUrl, Date lastLoginDate, Date joinDate, List<String> roles, List<String> authorities, boolean isActive, boolean isNotLocked) {
+    public User(Long id, String userId, String firstName, String lastName, String username, String password, String email, String profileImageUrl, Date lastLoginDate, Date joinDate, ArrayList<String> roles, ArrayList<String> authorities, boolean isActive, boolean isNotLocked) {
         this.id = id;
         this.userId = userId;
         this.firstName = firstName;
@@ -117,6 +119,14 @@ public class User implements Serializable {
         this.lastLoginDate = lastLoginDate;
     }
 
+    public Date getLastLoginDateDisplay() {
+        return lastLoginDateDisplay;
+    }
+
+    public void setLastLoginDateDisplay(Date lastLoginDateDisplay) {
+        this.lastLoginDateDisplay = lastLoginDateDisplay;
+    }
+
     public Date getJoinDate() {
         return joinDate;
     }
@@ -129,7 +139,7 @@ public class User implements Serializable {
         return roles;
     }
 
-    public void setRoles(List<String> roles) {
+    public void setRoles(ArrayList<String> roles) {
         this.roles = roles;
     }
 
@@ -137,7 +147,7 @@ public class User implements Serializable {
         return authorities;
     }
 
-    public void setAuthorities(List<String> authorities) {
+    public void setAuthorities(ArrayList<String> authorities) {
         this.authorities = authorities;
     }
 
