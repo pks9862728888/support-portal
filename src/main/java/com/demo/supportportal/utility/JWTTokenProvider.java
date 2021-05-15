@@ -26,7 +26,7 @@ public class JWTTokenProvider {
     @Value("${jwt.token.secret}")
     private String secret;
 
-    private String generateJwtToken(UserPrincipal userPrincipal) {
+    public String generateJwtToken(UserPrincipal userPrincipal) {
         List<String> claims = getClaimsFromUser(userPrincipal);
         return JWT.create()
                 .withIssuer(SecurityConstants.GET_ARRAYS_LLC)

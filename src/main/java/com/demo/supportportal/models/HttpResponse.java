@@ -12,7 +12,7 @@ public class HttpResponse {
     private String reason;
     private String message;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "DD-MM-yyyy HH:mm:ss", timezone = "Asia/Kolkata")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss", timezone = "Asia/Kolkata")
     private Date timestamp;
 
     public HttpResponse(int httpStatusCode, HttpStatus httpStatus, String reason, String message) {

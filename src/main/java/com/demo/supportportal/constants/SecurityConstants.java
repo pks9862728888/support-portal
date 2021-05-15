@@ -2,7 +2,7 @@ package com.demo.supportportal.constants;
 
 public interface SecurityConstants {
 
-    long EXPIRATION_TIME_IN_MILLISECONDS = 24 * 60 * 60 * 1000;  // 1 day
+    long EXPIRATION_TIME_IN_MILLISECONDS = 5 * 24 * 60 * 60 * 1000;  // 5 day
     String TOKEN_PREFIX = "Bearer ";
     String JWT_TOKEN_HEADER = "Jwt-Token";
     String TOKEN_CANNOT_BE_VERIFIED = "Token cannot be verified";
@@ -13,10 +13,13 @@ public interface SecurityConstants {
     String ACCESS_DENIED_MESSAGE = "You do not have permission to access this page";
     String OPTIONS_HTTP_METHOD = "OPTIONS";
     String[] PUBLIC_URLS = {
-            "**/user/login",
-            "**/user/register",
-            "**/user/reset-password/**",
-            "**/user/image/**"
+            "/api/v1/user/login",
+            "/api/v1/user/register",
+            "/api/v1/user/reset-password/**",
+            "/api/v1/user/image/**"
     };
+//    String[] PUBLIC_URLS = {
+//            "**"
+//    };
 
 }

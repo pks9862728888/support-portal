@@ -2,6 +2,7 @@ package com.demo.supportportal.filters;
 
 import com.demo.supportportal.constants.SecurityConstants;
 import com.demo.supportportal.utility.JWTTokenProvider;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -20,6 +21,7 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
 
     private JWTTokenProvider jwtTokenProvider;
 
+    @Autowired
     public JWTAuthorizationFilter(JWTTokenProvider jwtTokenProvider) {
         this.jwtTokenProvider = jwtTokenProvider;
     }
