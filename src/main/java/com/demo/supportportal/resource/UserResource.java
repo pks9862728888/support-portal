@@ -4,6 +4,7 @@ import com.demo.supportportal.exceptions.EmailExistsException;
 import com.demo.supportportal.exceptions.ExceptionHandling;
 import com.demo.supportportal.exceptions.UserNotFoundException;
 import com.demo.supportportal.exceptions.UsernameExistsException;
+import com.demo.supportportal.models.HttpResponse;
 import com.demo.supportportal.models.User;
 import com.demo.supportportal.models.UserPrincipal;
 import com.demo.supportportal.services.UserService;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import static com.demo.supportportal.constants.SecurityConstants.JWT_TOKEN_HEADER;
+import static com.demo.supportportal.constants.UserImplementationConstant.REGISTRATION_SUCCESS_MESSAGE;
 
 @RestController
 @RequestMapping("/api/v1/user")
@@ -46,9 +48,13 @@ public class UserResource extends ExceptionHandling {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<User> register(@RequestBody User user) throws UserNotFoundException, UsernameExistsException, EmailExistsException {
+    public ResponseEntity<HttpResponse> register(@RequestBody User user) throws UserNotFoundException, UsernameExistsException, EmailExistsException {
         User newUser = userService.register(user.getFirstName(), user.getLastName(), user.getUsername(), user.getEmail());
-        return new ResponseEntity<User>(newUser, HttpStatus.CREATED);
+        return new ResponseEntity<>(generateResponse(HttpStatus.CREATED, REGISTRATION_SUCCESS_MESSAGE), HttpStatus.CREATED);
+    }
+
+    private HttpResponse generateResponse(HttpStatus status, String message) {
+        return new HttpResponse(status.value(), status, status.getReasonPhrase().toUpperCase(), message.toUpperCase());
     }
 
     private HttpHeaders getJwtHeader(UserPrincipal userPrincipal) {

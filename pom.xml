@@ -16,6 +16,7 @@
 	<properties>
 		<java.version>11</java.version>
         <jwt.version>3.15.0</jwt.version>
+        <com.google.guava.version>30.1.1-jre</com.google.guava.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -31,6 +32,10 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.auth0</groupId>
             <artifactId>java-jwt</artifactId>
             <version>${jwt.version}</version>
@@ -38,6 +43,11 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${com.google.guava.version}</version>
         </dependency>
 
 		<dependency>

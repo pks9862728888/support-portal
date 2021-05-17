@@ -1,11 +1,13 @@
 package com.demo.supportportal.services.impl;
 
+import com.demo.supportportal.events.UserRegistrationEvent;
 import com.demo.supportportal.exceptions.EmailExistsException;
 import com.demo.supportportal.exceptions.UserNotFoundException;
 import com.demo.supportportal.exceptions.UsernameExistsException;
 import com.demo.supportportal.models.User;
 import com.demo.supportportal.models.UserPrincipal;
 import com.demo.supportportal.repositories.UserRepository;
+import com.demo.supportportal.services.LoginAttemptService;
 import com.demo.supportportal.services.UserService;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -14,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -40,12 +43,18 @@ public class UserDetailsServiceImpl implements UserService {
 
     private PasswordEncoder passwordEncoder;
 
+    private LoginAttemptService loginAttemptService;
+
+    private ApplicationEventPublisher applicationEventPublisher;
+
     private Logger LOGGER = LoggerFactory.getLogger(getClass());
 
     @Autowired
-    public UserDetailsServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserDetailsServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, LoginAttemptService loginAttemptService, ApplicationEventPublisher applicationEventPublisher) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.loginAttemptService = loginAttemptService;
+        this.applicationEventPublisher = applicationEventPublisher;
     }
 
     @Override
@@ -56,10 +65,22 @@ public class UserDetailsServiceImpl implements UserService {
             LOGGER.error(NO_USER_FOUND_WITH_USERNAME + username);
             throw new UsernameNotFoundException(NO_USER_FOUND_WITH_USERNAME + username);
         } else {
+            validateLoginAttempt(user);
             user.setLastLoginDateDisplay(user.getLastLoginDate());
             user.setLastLoginDate(new Date());
             userRepository.saveAndFlush(user);
             return new UserPrincipal(user);
+        }
+    }
+
+    private void validateLoginAttempt(User user) {
+        if (user.isNotLocked()) {
+            if (loginAttemptService.hasExceededMaxAttempts(user.getUsername())) {
+                user.setNotLocked(false);
+                userRepository.saveAndFlush(user);
+            }
+        } else {
+            loginAttemptService.evictUserFromLoginAttemptCache(user.getUsername());
         }
     }
 
@@ -81,7 +102,8 @@ public class UserDetailsServiceImpl implements UserService {
         String password = generatePassword();
         user.setPassword(this.passwordEncoder.encode(password));
         userRepository.saveAndFlush(user);
-        LOGGER.info("Password: " + password);
+        this.applicationEventPublisher.publishEvent(
+                new UserRegistrationEvent(this, user.getEmail(), password, user.getFirstName()));
         return user;
     }
 
